@@ -22,8 +22,13 @@ public class Lox {
 //< Evaluating Expressions had-runtime-error-field
   public static void main(String[] args) throws IOException {
     if (args.length > 1) {
-      System.out.println("Usage: jlox [script]");
-      System.exit(64); // [64]
+      //jlox --lex SCRIPT
+      if(args.length == 2 && args[0].equals("--lex")){
+        runLexer(args[1]);
+      }else{
+        System.out.println("Usage: jlox [script]");
+        System.exit(64); // [64]
+      }
     } else if (args.length == 1) {
       runFile(args[0]);
     } else {
@@ -61,6 +66,18 @@ public class Lox {
   }
 //< prompt
 //> run
+
+  private static void runLexer(String path) throws IOException {
+    byte[] bytes = Files.readAllBytes(Paths.get(path));
+    String source = new String(bytes, Charset.defaultCharset());
+
+    Scanner scanner = new Scanner(source);
+    List<Token> tokens = scanner.scanTokens();
+    for (Token token : tokens) {
+      System.out.println(token);
+    }
+  }
+
   private static void run(String source) {
     Scanner scanner = new Scanner(source);
     List<Token> tokens = scanner.scanTokens();
